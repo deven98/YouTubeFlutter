@@ -23,8 +23,7 @@ class MyHomePage extends StatefulWidget {
   _MyHomePageState createState() => new _MyHomePageState();
 }
 
-class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin{
-
+class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
   AnimationController alignmentAnimationController;
   Animation alignmentAnimation;
 
@@ -52,23 +51,31 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin{
   void initState() {
     super.initState();
 
-    alignmentAnimationController = AnimationController(vsync: this, duration: Duration(seconds: 1))
-      ..addListener(() {
-        setState(() {
-          currentAlignment = alignmentAnimation.value;
-        });
-      });
-    alignmentAnimation = AlignmentTween(begin: Alignment.topCenter, end: Alignment.bottomRight).animate(CurvedAnimation(parent: alignmentAnimationController, curve: Curves.fastOutSlowIn));
+    alignmentAnimationController =
+        AnimationController(vsync: this, duration: Duration(seconds: 1))
+          ..addListener(() {
+            setState(() {
+              currentAlignment = alignmentAnimation.value;
+            });
+          });
+    alignmentAnimation =
+        AlignmentTween(begin: Alignment.topCenter, end: Alignment.bottomRight)
+            .animate(CurvedAnimation(
+                parent: alignmentAnimationController,
+                curve: Curves.fastOutSlowIn));
 
-    videoViewController = AnimationController(vsync: this, duration: Duration(seconds: 1))
-      ..addListener(() {
-        setState(() {
-          currentVideoWidth = (maxVideoWidth*videoViewAnimation.value) + (minVideoWidth*(1.0-videoViewAnimation.value));
-          currentVideoHeight = (maxVideoHeight*videoViewAnimation.value) + (minVideoHeight*(1.0-videoViewAnimation.value));
-        });
-      });
-    videoViewAnimation = Tween<double>(begin: 1.0, end: 0.0).animate(videoViewController);
-
+    videoViewController =
+        AnimationController(vsync: this, duration: Duration(seconds: 1))
+          ..addListener(() {
+            setState(() {
+              currentVideoWidth = (maxVideoWidth * videoViewAnimation.value) +
+                  (minVideoWidth * (1.0 - videoViewAnimation.value));
+              currentVideoHeight = (maxVideoHeight * videoViewAnimation.value) +
+                  (minVideoHeight * (1.0 - videoViewAnimation.value));
+            });
+          });
+    videoViewAnimation =
+        Tween<double>(begin: 1.0, end: 0.0).animate(videoViewController);
   }
 
   var videos = [
@@ -196,101 +203,103 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin{
             },
           ),
         ),
-        videoIndexSelected > -1 ?
-        LayoutBuilder(
-          builder: (context, constraints) {
+        videoIndexSelected > -1
+            ? LayoutBuilder(
+                builder: (context, constraints) {
+                  maxVideoWidth = constraints.biggest.width;
 
-            maxVideoWidth = constraints.biggest.width;
+                  if (!isInSmallMode) {
+                    currentVideoWidth = maxVideoWidth;
+                  }
 
-            if(!isInSmallMode) {
-              currentVideoWidth = maxVideoWidth;
-            }
-
-            return Column(
-              crossAxisAlignment: CrossAxisAlignment.end,
-              children: <Widget>[
-                Expanded(
-                  child: Align(
-                    child: Padding(
-                      padding: EdgeInsets.all(isInSmallMode? 8.0 : 0.0),
-                      child: GestureDetector(
-                        child: Container(
-                          width: currentVideoWidth,
-                          height: currentVideoHeight,
-                          child: Image.asset(
-                            videos[videoIndexSelected].imagePath,
-                            fit: BoxFit.cover,),
-                          color: Colors.blue,
+                  return Column(
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: <Widget>[
+                      Expanded(
+                        child: Align(
+                          child: Padding(
+                            padding: EdgeInsets.all(isInSmallMode ? 8.0 : 0.0),
+                            child: GestureDetector(
+                              child: Container(
+                                width: currentVideoWidth,
+                                height: currentVideoHeight,
+                                child: Image.asset(
+                                  videos[videoIndexSelected].imagePath,
+                                  fit: BoxFit.cover,
+                                ),
+                                color: Colors.blue,
+                              ),
+                              onVerticalDragEnd: (details) {
+                                if (details.velocity.pixelsPerSecond.dy > 0) {
+                                  setState(() {
+                                    isInSmallMode = true;
+                                    alignmentAnimationController.forward();
+                                    videoViewController.forward();
+                                  });
+                                } else if (details.velocity.pixelsPerSecond.dy <
+                                    0) {
+                                  setState(() {
+                                    alignmentAnimationController.reverse();
+                                    videoViewController.reverse().then((value) {
+                                      setState(() {
+                                        isInSmallMode = false;
+                                      });
+                                    });
+                                  });
+                                }
+                              },
+                            ),
+                          ),
+                          alignment: currentAlignment,
                         ),
-                        onVerticalDragEnd: (details) {
-                          if(details.velocity.pixelsPerSecond.dy > 0) {
-                            setState(() {
-                              isInSmallMode = true;
-                              alignmentAnimationController.forward();
-                              videoViewController.forward();
-                            });
-                          }else if (details.velocity.pixelsPerSecond.dy < 0){
-                            setState(() {
-                              alignmentAnimationController.reverse();
-                              videoViewController.reverse().then((value) {
-                                setState(() {
-                                  isInSmallMode = false;
-                                });
-                              });
-                            });
-                          }
-                        },
+                        flex: 3,
                       ),
-                    ),
-                    alignment: currentAlignment,
-                  ),
-                  flex: 3,
-                ),
-                currentAlignment == Alignment.topCenter ?
-                Expanded(
-                  flex: 6,
-                  child: Container(
-                    child: Column(
-                      children: <Widget>[
-                        Row(),
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Card(
-                            child: Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Text("Video Recommendation"),
-                            ),
-                          ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Card(
-                            child: Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Text("Video Recommendation"),
-                            ),
-                          ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Card(
-                            child: Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Text("Video Recommendation"),
-                            ),
-                          ),
-                        )
-                      ],
-                    ),
-                    color: Colors.white,
-                  ),
-                )
-                    :Container(),
-                Row(),
-              ],
-            );
-          },
-        ) : Container()
+                      currentAlignment == Alignment.topCenter
+                          ? Expanded(
+                              flex: 6,
+                              child: Container(
+                                child: Column(
+                                  children: <Widget>[
+                                    Row(),
+                                    Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Card(
+                                        child: Padding(
+                                          padding: const EdgeInsets.all(8.0),
+                                          child: Text("Video Recommendation"),
+                                        ),
+                                      ),
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Card(
+                                        child: Padding(
+                                          padding: const EdgeInsets.all(8.0),
+                                          child: Text("Video Recommendation"),
+                                        ),
+                                      ),
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Card(
+                                        child: Padding(
+                                          padding: const EdgeInsets.all(8.0),
+                                          child: Text("Video Recommendation"),
+                                        ),
+                                      ),
+                                    )
+                                  ],
+                                ),
+                                color: Colors.white,
+                              ),
+                            )
+                          : Container(),
+                      Row(),
+                    ],
+                  );
+                },
+              )
+            : Container()
       ]),
       bottomNavigationBar: BottomNavigationBar(
         items: [
