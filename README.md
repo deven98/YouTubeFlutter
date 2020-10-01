@@ -1,8 +1,8 @@
-# youtube_flutter
+# Youtube Clone 
 
-Recreating the YouTube UI in Flutter
+Recreating the youtube UI with the help of flutter.
+It is just a basic clone aim nor intended to copy the Youtube for monetary purpose.
 
-## Getting Started
+#About Flutter 
+Flutter is Framework which uses dart language. It is basically object oriented programming language.
 
-For help getting started with Flutter, view our online
-[documentation](https://flutter.io/).
