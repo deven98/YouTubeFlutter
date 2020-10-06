@@ -1,5 +1,5 @@
 os:
-  - windows
+  - linux
 sudo: false
 addons:
   apt:
