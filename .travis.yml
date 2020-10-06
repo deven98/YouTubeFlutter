@@ -13,6 +13,7 @@ before_script:
   - git clone https://github.com/flutter/flutter.git -b beta
   - ./flutter/bin/flutter doctor
 script:
+  - sudo dnf install mesa-libGLU.x86_64
   - ./flutter/bin/flutter test
 cache:
   directories:
