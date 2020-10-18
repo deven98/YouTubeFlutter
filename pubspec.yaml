@@ -1,6 +1,9 @@
 name: youtube_flutter
 description: Recreating the YouTube UI in Flutter
 
+environment:
+  sdk: ">=2.8.0 <3.0.0"
+
 dependencies:
   font_awesome_flutter: ^8.4.0
   flutter:
@@ -14,6 +17,8 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
 
+module:
+  androidX: true 
 
 # For information on the generic Dart part of this file, see the
 # following page: https://www.dartlang.org/tools/pub/pubspec
